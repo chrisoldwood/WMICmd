@@ -5,10 +5,7 @@
 
 #include "Common.hpp"
 #include <tchar.h>
-#include "TheApp.hpp"
-
-//! The application.
-static TheApp g_app;
+#include "WmiCmd.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 //! The process entry point.
