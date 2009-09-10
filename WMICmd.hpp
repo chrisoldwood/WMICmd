@@ -1,29 +1,30 @@
 ////////////////////////////////////////////////////////////////////////////////
-//! \file   TheApp.hpp
-//! \brief  The TheApp class declaration.
+//! \file   WmiCmd.hpp
+//! \brief  The WmiCmd class declaration.
 //! \author Chris Oldwood
 
 // Check for previous inclusion
-#ifndef THEAPP_HPP
-#define THEAPP_HPP
+#ifndef WMICMD_HPP
+#define WMICMD_HPP
 
 #if _MSC_VER > 1000
 #pragma once
 #endif
 
 #include <WCL/ConsoleApp.hpp>
+#include "Command.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 //! The application.
 
-class TheApp : public WCL::ConsoleApp
+class WmiCmd : public WCL::ConsoleApp
 {
 public:
 	//! Default constructor.
-	TheApp();
+	WmiCmd();
 
 	//! Destructor.
-	virtual ~TheApp();
+	virtual ~WmiCmd();
 	
 protected:
 	//
@@ -46,8 +47,17 @@ private:
 	// Internal methods.
 	//
 
+	//! Create the Comand object.
+	CommandPtr createCommand(int argc, tchar* argv[]); // throw(CmdLineException)
+
 	//! Display the program version.
 	void showVersion();
+
+	//! Display the manual.
+	void showManual();
 };
 
-#endif // THEAPP_HPP
+//! The application object.
+extern WmiCmd g_app;
+
+#endif // WMICMD_HPP

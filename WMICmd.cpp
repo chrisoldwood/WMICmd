@@ -1,39 +1,45 @@
 ////////////////////////////////////////////////////////////////////////////////
-//! \file   TheApp.cpp
-//! \brief  The TheApp class definition.
+//! \file   WmiCmd.cpp
+//! \brief  The WmiCmd class definition.
 //! \author Chris Oldwood
 
 #include "Common.hpp"
-#include "TheApp.hpp"
+#include "WmiCmd.hpp"
 #include <Core/tiostream.hpp>
 #include <WCL/Path.hpp>
 #include <WCL/VerInfoReader.hpp>
+#include "CmdLineArgs.hpp"
+#include <Core/CmdLineException.hpp>
+#include <Core/StringUtils.hpp>
+#include <WCL/AutoCom.hpp>
+#include "QueryCmd.hpp"
+
+////////////////////////////////////////////////////////////////////////////////
+// Global variables.
+
+//! The application object.
+WmiCmd g_app;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Local variables.
 
-static tstring s_appName(TXT("Application"));
+static tstring s_appName(TXT("WMICmd"));
 
 ////////////////////////////////////////////////////////////////////////////////
 // The table of command line switches.
-
-enum
-{
-	USAGE	= 0,	//!< Show the program options syntax.
-	VERSION	= 1,	//!< Show the program version and copyright.
-};
 
 static Core::CmdLineSwitch s_switches[] = 
 {
 	{ USAGE,	TXT("?"),	NULL,			Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,	NULL,	TXT("Display the program options syntax")	},
 	{ VERSION,	TXT("v"),	TXT("version"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,	NULL,	TXT("Display the program version")			},
+	{ HELP,		TXT("h"),	TXT("help"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,	NULL,	TXT("Display the manual")					},
 };
 static size_t s_switchCount = ARRAY_SIZE(s_switches);
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Default constructor.
 
-TheApp::TheApp()
+WmiCmd::WmiCmd()
 	: m_parser(s_switches, s_switches+s_switchCount)
 {
 }
@@ -41,49 +47,115 @@ TheApp::TheApp()
 ////////////////////////////////////////////////////////////////////////////////
 //! Destructor.
 
-TheApp::~TheApp()
+WmiCmd::~WmiCmd()
 {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Run the application.
 
-int TheApp::run(int argc, tchar* argv[])
+int WmiCmd::run(int argc, tchar* argv[])
 {
-	m_parser.parse(argc, argv, Core::CmdLineParser::ALLOW_UNIX_FORMAT);
+	// Command specified?
+	if ( (argc > 1) && ((argv[1][0] != TXT('/')) && (argv[1][0] != TXT('-'))) )
+	{
+		// Initilise COM layer.
+		WCL::AutoCom com(COINIT_APARTMENTTHREADED);
+/*
+		HRESULT result = ::CoInitializeSecurity(nullptr, -1, nullptr, nullptr,
+												RPC_C_AUTHN_LEVEL_DEFAULT,
+												RPC_C_IMP_LEVEL_IMPERSONATE,
+												nullptr, EOAC_NONE, nullptr);
 
-	// Request for help?
-	if (m_parser.isSwitchSet(USAGE))
-	{
-		showUsage();
-		return EXIT_SUCCESS;
+		if (FAILED(result))
+			throw WCL::ComException(result, TXT("Failed to initialize default COM security settings"));
+*/
+		// Get command and execute.
+		CommandPtr command = createCommand(argc, argv);
+
+		command->execute();
 	}
-	// Request for version?
-	else if (m_parser.isSwitchSet(VERSION))
+	else
 	{
-		showVersion();
-		return EXIT_SUCCESS;
+		m_parser.parse(argc, argv, Core::CmdLineParser::ALLOW_ANY_FORMAT);
+
+		// Request for command line syntax?
+		if (m_parser.isSwitchSet(USAGE))
+		{
+			showUsage();
+			return EXIT_SUCCESS;
+		}
+		// Request for version?
+		else if (m_parser.isSwitchSet(VERSION))
+		{
+			showVersion();
+			return EXIT_SUCCESS;
+		}
+		// Request for the manual?
+		else if (m_parser.isSwitchSet(HELP))
+		{
+			showManual();
+			return EXIT_SUCCESS;
+		}
+		// Empty.
+		else
+		{
+			throw Core::CmdLineException(TXT("No command specified"));
+		}
 	}
 
 	return EXIT_SUCCESS;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//! Create the Comand object.
+
+CommandPtr WmiCmd::createCommand(int argc, tchar* argv[])
+{
+	ASSERT(argc > 1);
+
+	// Validate command line.
+	const tchar* command = argv[1];
+
+	// Create command.
+	if (tstricmp(command, TXT("query")) == 0)
+	{
+		return CommandPtr(new QueryCmd(argc, argv));
+	}
+
+	throw Core::CmdLineException(Core::fmt(TXT("Unknown command: '%s'"), command));
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //! Display the program options syntax.
 
-void TheApp::showUsage()
+void WmiCmd::showUsage()
 {
 	tcout << std::endl;
-	tcout << TXT("USAGE: ") << s_appName << (" [options] ...") << std::endl;
+	tcout << TXT("USAGE: ") << s_appName << (" <command> [options] ...") << std::endl;
 	tcout << std::endl;
 
+	size_t width = 16;
+
+	tcout << TXT("where <command> is one of:-") << std::endl;
+	tcout << std::endl;
+	tcout << TXT("query") << tstring(width-5, TXT(' ')) << ("Execute a query") << std::endl;
+	tcout << std::endl;
+
+	tcout << TXT("For help on an individual command use:-") << std::endl;
+	tcout << std::endl;
+	tcout << s_appName << TXT(" <command> -?") << std::endl;
+	tcout << std::endl;
+
+	tcout << TXT("Non-command options:-") << std::endl;
+	tcout << std::endl;
 	tcout << m_parser.formatSwitches(Core::CmdLineParser::UNIX);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Display the program version.
 
-void TheApp::showVersion()
+void WmiCmd::showVersion()
 {
 	// Extract details from the resources.
 	tstring filename  = CPath::Application();
@@ -97,5 +169,18 @@ void TheApp::showVersion()
 	// Display version etc.
 	tcout << std::endl;
 	tcout << s_appName << TXT(" v") << version << std::endl;
+	tcout << std::endl;
 	tcout << copyright << std::endl;
+	tcout << TXT("gort@cix.co.uk") << std::endl;
+	tcout << TXT("www.cix.co.uk/~gort") << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//! Display the manual.
+
+void WmiCmd::showManual()
+{
+	tstring helpfile = s_appName + TXT(".mht");
+
+	::ShellExecute(NULL, NULL, CPath::ApplicationDir() / helpfile.c_str(), NULL, NULL, SW_SHOW);
 }
