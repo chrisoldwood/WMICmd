@@ -23,16 +23,24 @@ Global
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
 	EndGlobalSection
 	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 2
-		SccProjectUniqueName0 = ..\\Lib\\Core\\Core.vcproj
-		SccProjectName0 = \u0022$/Win32/Lib/Core\u0022,\u0020QWDAAAAA
-		SccLocalPath0 = ..\\Lib\\Core
-		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccNumberOfProjects = 5
+		SccLocalPath0 = .
 		CanCheckoutShared = true
-		SccProjectUniqueName1 = ..\\Lib\\WCL\\Wcl.vcproj
-		SccProjectName1 = \u0022$/Win32/Lib/WCL\u0022,\u0020HPAAAAAA
-		SccLocalPath1 = ..\\Lib\\WCL
-		SccProvider1 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SolutionUniqueID = {239D1BB7-C3A1-40EE-B0A6-92A317244B15}
+		SccProjectUniqueName1 = WMICmd.vcproj
+		SccLocalPath1 = .
+		CanCheckoutShared = true
+		SccProjectUniqueName2 = ..\\Lib\\Core\\Core.vcproj
+		SccProjectName2 = \u0022$/Win32/Lib/Core\u0022,\u0020QWDAAAAA
+		SccLocalPath2 = ..\\Lib\\Core
+		CanCheckoutShared = true
+		SccProjectUniqueName3 = ..\\Lib\\WCL\\Wcl.vcproj
+		SccProjectName3 = \u0022$/Win32/Lib/WCL\u0022,\u0020HPAAAAAA
+		SccLocalPath3 = ..\\Lib\\WCL
+		CanCheckoutShared = true
+		SccProjectUniqueName4 = ..\\Lib\\WMI\\WMI.vcproj
+		SccProjectName4 = \u0022$/Win32/Lib/WMI\u0022,\u0020HBFAAAAA
+		SccLocalPath4 = ..\\Lib\\WMI
 		CanCheckoutShared = true
 	EndGlobalSection
 	GlobalSection(SolutionConfiguration) = preSolution
