@@ -1,0 +1,1 @@
+- "WMICmd --he" doesn't report a command line error.
