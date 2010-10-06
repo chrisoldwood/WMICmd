@@ -25,10 +25,10 @@ BEGIN
 			VALUE "FileDescription",  "WMI Command\0"
 			VALUE "FileVersion",      "1.0\0"
 			VALUE "InternalName",     "WMICmd.exe\0"
-			VALUE "LegalCopyright",   "(C) Chris Oldwood 2009\0"
+			VALUE "LegalCopyright",   "(C) Chris Oldwood 2009-2010\0"
 			VALUE "OriginalFilename", "WMICmd.exe\0"
 			VALUE "ProductName",      "WMI Command\0"
-			VALUE "ProductVersion",   "1.0\0"
+			VALUE "ProductVersion",   "1.0 [Alpha]\0"
 #ifdef _DEBUG
 			VALUE "Comments",         "Debug Build\0"
 #endif
