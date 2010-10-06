@@ -1,1 +1,3 @@
 - "WMICmd --he" doesn't report a command line error.
+
+- Report error if helpfile missing.
