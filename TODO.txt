@@ -1,3 +1,5 @@
-- "WMICmd --he" doesn't report a command line error.
+- Conversion failure on "select OEMLogoBitmap from Win32_ComputerSystem" (binary data)
 
-- Report error if helpfile missing.
+- Conversion failure on "select OEMStringArray from Win32_ComputerSystem" (string array)
+
+- Conversion failure on "select Capabilities from Win32_DiskDrive" (VT_I4|VT_ARRAY)
