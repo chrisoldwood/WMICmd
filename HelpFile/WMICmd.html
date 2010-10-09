@@ -20,8 +20,59 @@ td		{ font-family: Verdana, Arial; font-size: 10pt; border: 1px solid black; ver
 <h5>Introduction</h5>
 
 <p>
-This is a command line (aka console) based tool for executing WMI queries.
+This is a command line (aka console) based tool for executing WMI queries. It
+outputs a list of the matching objects with their relevant properties.
+</p><p>
+Like most of my tools, this was designed as a test harness for my WMI library
+and was originally written before PowerShell was prevalent in the wild.
 </p>
+
+<a name="Commands"></a>
+<h5>Commands</h5>
+
+<p>
+The tool currently only supports a single command, but the syntax allows for
+future extensions. The basic format for invoking WMI Command is to run it with
+a command type and then provide any arguments using switches, e.g.
+</p>
+<pre>
+C:\> wmicmd command --option1 value1 --option2 value2
+</pre>
+<p>
+The arguments can be specified using either Windows style (e.g. /option) or the
+more common style (e.g. --option). Each switch has both a short name and a
+longer name and you can see the list of all supported commands using "wmicmd -?".
+Each command has its own help topic that describes it and lists the switches
+that are applicable, e.g. wmicmd query -?.
+</p>
+
+<a name="QueryCommand"></a>
+<h5>The Query Command</h5>
+
+<p>
+The query command allows you to execute a WMI query which is provided as a
+single argument after the command name. It lists all the objects in the result
+sets, dumping their available properties.
+</p><pre>
+C:\> wmicmd query "SELECT Name,State FROM Win32_Service"
+Name: Alerter
+State: Stopped
+. . .
+Name: Dhcp
+State: Running
+. . .
+Name: xmlprov
+State: Stopped
+</pre><p>
+The command can also be run against one or remote machines using the --hosts
+switch. And, if required, an alternate set of credentials can be provided (the
+same credentials will be used for all the listed hosts).
+</p><pre>
+C:\> wmicmd query "SELECT State FROM Win32_Service WHERE Name='w32time'" --hosts machine1 machine2 machine3
+</pre>
+<pre>
+C:\> wmicmd query "SELECT State FROM Win32_Service WHERE Name='w32time'" --hosts srv1 srv2 --user admin --password p455w0rd
+</pre>
 
 <hr>
 
