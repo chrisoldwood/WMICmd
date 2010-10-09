@@ -12,6 +12,7 @@
 #endif
 
 #include "Command.hpp"
+#include <WCL/Variant.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 //! The command used to list the running servers and topics.
@@ -38,6 +39,9 @@ private:
 
 	//! The implementation of the command.
 	virtual int doExecute();
+
+	//! Format the value.
+	tstring formatValue(const WCL::Variant& value, bool detectDates);
 };
 
 #endif // APP_QUERYCMD_HPP
