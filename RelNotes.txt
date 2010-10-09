@@ -1,7 +1,7 @@
-Version 1.0
-===========
+Version 1.0 [Alpha]
+===================
 
-- ???
+- Support for executing queries against both the local and remote machines.
 
 
 Chris Oldwood 

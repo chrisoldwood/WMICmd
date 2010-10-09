@@ -1,5 +1,5 @@
-WMI Command v1.0
-================
+WMI Command v1.0 [Alpha]
+========================
 
 
 1: Installation
