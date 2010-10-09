@@ -181,6 +181,13 @@ void WmiCmd::showVersion()
 void WmiCmd::showManual()
 {
 	tstring helpfile = s_appName + TXT(".mht");
+	CPath   fullpath = CPath::ApplicationDir() / helpfile.c_str();
 
-	::ShellExecute(NULL, NULL, CPath::ApplicationDir() / helpfile.c_str(), NULL, NULL, SW_SHOW);
+	if (!fullpath.Exists())
+	{
+		tcerr << TXT("ERROR: Manual missing - '") << fullpath.c_str() << TXT("'") << std::endl;
+		return;
+	}
+
+	::ShellExecute(NULL, NULL, fullpath.c_str(), NULL, NULL, SW_SHOW);
 }
