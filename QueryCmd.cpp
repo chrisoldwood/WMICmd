@@ -9,6 +9,7 @@
 #include <Core/CmdLineException.hpp>
 #include <Core/tiostream.hpp>
 #include <Core/StringUtils.hpp>
+#include <WCL/DateTime.hpp>
 #include <WCL/VariantBool.hpp>
 #include <WMI/Connection.hpp>
 #include <WMI/ObjectIterator.hpp>
@@ -209,19 +210,17 @@ bool tryConvertDateTime(const tstring& value, tstring& datetime)
 		++it;
 	}	
 
-	const tstring year     = value.substr( 0, 4);
-	const tstring month    = value.substr( 4, 2);
-	const tstring day      = value.substr( 6, 2);
-	const tstring hours    = value.substr( 8, 2);
-	const tstring minutes  = value.substr(10, 2);
-	const tstring seconds  = value.substr(12, 2);
-	const tstring fraction = value.substr(15, 6);
-	const tstring offset   = value.substr(22, 3);
+	const int year       = Core::parse<int>(value.substr( 0, 4));
+	const int month      = Core::parse<int>(value.substr( 4, 2));
+	const int day        = Core::parse<int>(value.substr( 6, 2));
+	const int hours      = Core::parse<int>(value.substr( 8, 2));
+	const int minutes    = Core::parse<int>(value.substr(10, 2));
+	const int seconds    = Core::parse<int>(value.substr(12, 2));
+	const tstring offset = value.substr(21, 4);
 
-	datetime = Core::fmt(TXT("%s/%s/%s %s:%s:%s +%s"),
-						 day.c_str(), month.c_str(), year.c_str(),
-						 hours.c_str(), minutes.c_str(), seconds.c_str(),
-						 offset.c_str());
+	CDateTime parsedDateTime(day, month, year, hours, minutes, seconds);
+
+	datetime = Core::fmt(TXT("%s %s"), parsedDateTime.ToString().c_str(), offset.c_str());
 
 	return true;
 }
@@ -234,11 +233,11 @@ tstring QueryCmd::formatValue(const WCL::Variant& value, bool detectDates)
 {
 	tstring result;
 
-	if (value.IsArray())
+	if ( (value.type() == VT_EMPTY) || (value.type() == VT_NULL))
 	{
-		result = TXT("<array>");
+		result = TXT("<null>");
 	}
-	else
+	else if (value.type() == VT_BSTR)
 	{
 		result = value.format();
 
@@ -247,7 +246,21 @@ tstring QueryCmd::formatValue(const WCL::Variant& value, bool detectDates)
 			tstring datetime;
 
 			if (tryConvertDateTime(result, datetime))
-				return datetime;
+				result = datetime;
+		}
+	}
+	else
+	{
+		if (value.isArray())
+		{
+			VARTYPE valueType = value.valueType();
+
+			result = Core::fmt(TXT("<array of %s>"), WCL::Variant::formatType(valueType));
+		}
+		else
+		{
+			if (!value.tryFormat(result))
+				result = TXT("<conversion failed>");
 		}
 	}
 
