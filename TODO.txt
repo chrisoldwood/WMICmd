@@ -1,5 +1,7 @@
-- Conversion failure on "select OEMLogoBitmap from Win32_ComputerSystem" (binary data)
+- Convert string array to list of strings.
 
-- Conversion failure on "select OEMStringArray from Win32_ComputerSystem" (string array)
+- Make date conversion the default?
 
-- Conversion failure on "select Capabilities from Win32_DiskDrive" (VT_I4|VT_ARRAY)
+- On argument failure it doesn't show the help for the invoked command.
+
+- Check object spacing when querying multiple hosts.
