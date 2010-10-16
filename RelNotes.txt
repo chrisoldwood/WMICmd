@@ -1,10 +1,11 @@
-Version 1.0 [Alpha]
-===================
+Version 1.0 [Beta]
+==================
 
 - Support for executing queries against both the local and remote machines.
+- Detection of WMI format dates and reformatting as per the locale.
 
 
 Chris Oldwood 
 [gort@cix.co.uk]
 
-6th October 2010
+11th October 2010

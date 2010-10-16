@@ -1,5 +1,5 @@
-WMI Command v1.0 [Alpha]
-========================
+WMI Command v1.0 [Beta]
+=======================
 
 
 1: Installation
@@ -33,4 +33,4 @@ Web:   http://www.cix.co.uk/~gort
 
 Chris Oldwood 
 
-6th October 2010
+11th October 2010
