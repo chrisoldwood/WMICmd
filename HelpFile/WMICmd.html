@@ -14,7 +14,7 @@ td		{ font-family: Verdana, Arial; font-size: 10pt; border: 1px solid black; ver
 
 <body>
 
-<h3 align="center">WMI Command v1.0 [Alpha]</h3>
+<h3 align="center">WMI Command v1.0 [Beta]</h3>
 
 <a name="Introduction"></a>
 <h5>Introduction</h5>
@@ -72,6 +72,47 @@ C:\> wmicmd query "SELECT State FROM Win32_Service WHERE Name='w32time'" --hosts
 </pre>
 <pre>
 C:\> wmicmd query "SELECT State FROM Win32_Service WHERE Name='w32time'" --hosts srv1 srv2 --user admin --password p455w0rd
+</pre><p>
+When running a query on multiple hosts the output does not contain the hostname
+anywhere by default so it may be tricky to work out which response was from
+which host. You can use the --ShowHost switch to force an extra leading property
+to appear with the hostname in it.
+</p><pre>
+C:\> wmicmd query "select LastBootUpTime from Win32_operatingsystem" --hosts srv1 srv2 --showhost
+
+Host: srv1
+LastBootUpTime: ...
+
+Host: srv2
+LastBootUpTime: ...
+</pre><p>
+If one of more of the property values contains a datetime (which are awkward to
+read) you can use the --DetectDates switch to have them reformated according to
+your locale.
+</p><pre>
+C:\> wmicmd query "select LocalDateTime from Win32_operatingsystem" --detectdates
+
+LocalDateTime: 11/10/2010 18:02:26 +060
+</pre><p>
+If you're using the tool as a development aid and want to know what the actual
+COM types of the properties are you can use the --ShowTypes switch. This will
+append a string to the property name showing the VT_* symbols that represent
+the Variant types.
+</p><pre>
+C:\> wmicmd.exe query "select * from Win32_operatingsystem" --ShowTypes
+
+BootDevice [VT_BSTR]: \Device\HarddiskVolume1
+. . .
+CurrentTimeZone [VT_I2]: 60
+DataExecutionPrevention_Drivers [VT_BOOL]: True
+DataExecutionPrevention_SupportPolicy [VT_UI1]: 2
+. . .
+EncryptionLevel [VT_I4]: 168
+ForegroundApplicationBoost [VT_UI1]: 2
+. . .
+LocalDateTime [VT_BSTR]: 20101011181637.234000+060
+. . .
+SystemStartupOptions [VT_BSTR|VT_ARRAY]: &lt;array of VT_BSTR&gt;
 </pre>
 
 <hr>
@@ -102,7 +143,7 @@ Email: <a href="mailto://gort@cix.co.uk">gort@cix.co.uk</a><br>
 Web: <a href="http://www.cix.co.uk/~gort">www.cix.co.uk/~gort</a><br>
 </p><p>
 Chris Oldwood<br>
-6th October 2010<br>
+11th October 2010<br>
 </p>
 
 </body>
