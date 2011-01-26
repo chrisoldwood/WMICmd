@@ -5,3 +5,15 @@
 - On argument failure it doesn't show the help for the invoked command.
 
 - Check object spacing when querying multiple hosts.
+
+- Right align numbers and align columns e.g.
+
+CommitLimit   : 12404097024
+CommittedBytes:  1381416960
+
+CommitLimit   : 12404101120
+CommittedBytes:   840335360
+
+- Support , separators
+
+- Display values in MB/GB etc.
