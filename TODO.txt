@@ -1,7 +1,5 @@
 - Convert string array to list of strings.
 
-- Make date conversion the default?
-
 - Check object spacing when querying multiple hosts.
 
 - Right align numbers and align columns e.g.
@@ -12,12 +10,6 @@ CommittedBytes:  1381416960
 CommitLimit   : 12404101120
 CommittedBytes:   840335360
 
-- Support , separators
+- Support , separators in large numbers
 
-- Display values in MB/GB etc.
-
-- On argument failure it doesn't show the help for the invoked command.
-
-- WmiCmd::run doesn't return command result code
-
-- Should Command::execute() trap configuration error and display command specific usage?
+- Add InstallDirDlg dialog to WiX script.
