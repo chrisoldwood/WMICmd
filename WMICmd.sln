@@ -18,6 +18,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WMI", "..\Lib\WMI\WMI.vcpro
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcproj", "{DA731FA1-2E1A-49F2-A4D6-EFA3822DD08D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{790BC113-52FB-4565-8968-79B8B011C520} = {790BC113-52FB-4565-8968-79B8B011C520}
+		{6497EA41-2782-4A79-8840-6854E22EC4F4} = {6497EA41-2782-4A79-8840-6854E22EC4F4}
+		{9B0335B6-93BE-4604-8497-27431874D758} = {9B0335B6-93BE-4604-8497-27431874D758}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
@@ -66,6 +73,10 @@ Global
 		{6497EA41-2782-4A79-8840-6854E22EC4F4}.Debug.Build.0 = Debug|Win32
 		{6497EA41-2782-4A79-8840-6854E22EC4F4}.Release.ActiveCfg = Release|Win32
 		{6497EA41-2782-4A79-8840-6854E22EC4F4}.Release.Build.0 = Release|Win32
+		{DA731FA1-2E1A-49F2-A4D6-EFA3822DD08D}.Debug.ActiveCfg = Debug|Win32
+		{DA731FA1-2E1A-49F2-A4D6-EFA3822DD08D}.Debug.Build.0 = Debug|Win32
+		{DA731FA1-2E1A-49F2-A4D6-EFA3822DD08D}.Release.ActiveCfg = Release|Win32
+		{DA731FA1-2E1A-49F2-A4D6-EFA3822DD08D}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
