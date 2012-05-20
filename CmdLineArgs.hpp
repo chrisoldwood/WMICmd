@@ -23,8 +23,8 @@ enum CmdLineArgType
 	PASSWORD		= 4,	//!< The password to use for remote hosts.
 	SHOW_HOST		= 5,	//!< Repeat the hostname in the output.
 	SHOW_TYPES		= 6,	//!< Display the COM type of the property values.
-	DETECT_DATES	= 7,	//!< Display datetime type strings in datetime format.
-	HELP			= 99,	//!< Show the manual.
+	NO_FORMAT		= 7,	//!< Display raw values instead of beautifying them.
+	MANUAL			= 99,	//!< Show the manual.
 };
 
 #endif // APP_CMDLINEARGS_HPP

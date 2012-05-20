@@ -5,7 +5,6 @@
 
 #include "Common.hpp"
 #include "WmiCmd.hpp"
-#include <Core/tiostream.hpp>
 #include <WCL/Path.hpp>
 #include <WCL/VerInfoReader.hpp>
 #include "CmdLineArgs.hpp"
@@ -30,9 +29,10 @@ static tstring s_appName(TXT("WMICmd"));
 
 static Core::CmdLineSwitch s_switches[] = 
 {
-	{ USAGE,	TXT("?"),	NULL,			Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,	NULL,	TXT("Display the program options syntax")	},
+	{ USAGE,	TXT("?"),	NULL,			Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,	NULL,	NULL										},
+	{ USAGE,	TXT("h"),	TXT("help"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,	NULL,	TXT("Display the program options syntax")	},
 	{ VERSION,	TXT("v"),	TXT("version"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,	NULL,	TXT("Display the program version")			},
-	{ HELP,		TXT("h"),	TXT("help"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,	NULL,	TXT("Display the manual")					},
+	{ MANUAL,	NULL,		TXT("manual"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,	NULL,	TXT("Display the manual")					},
 };
 static size_t s_switchCount = ARRAY_SIZE(s_switches);
 
@@ -54,7 +54,7 @@ WmiCmd::~WmiCmd()
 ////////////////////////////////////////////////////////////////////////////////
 //! Run the application.
 
-int WmiCmd::run(int argc, tchar* argv[])
+int WmiCmd::run(int argc, tchar* argv[], tistream& /*in*/, tostream& out, tostream& err)
 {
 	// Command specified?
 	if ( (argc > 1) && ((argv[1][0] != TXT('/')) && (argv[1][0] != TXT('-'))) )
@@ -73,38 +73,31 @@ int WmiCmd::run(int argc, tchar* argv[])
 		// Get command and execute.
 		CommandPtr command = createCommand(argc, argv);
 
-		command->execute();
+		return command->execute(out, err);
 	}
-	else
+
+	m_parser.parse(argc, argv, Core::CmdLineParser::ALLOW_ANY_FORMAT);
+
+	// Request for command line syntax?
+	if (m_parser.isSwitchSet(USAGE))
 	{
-		m_parser.parse(argc, argv, Core::CmdLineParser::ALLOW_ANY_FORMAT);
-
-		// Request for command line syntax?
-		if (m_parser.isSwitchSet(USAGE))
-		{
-			showUsage();
-			return EXIT_SUCCESS;
-		}
-		// Request for version?
-		else if (m_parser.isSwitchSet(VERSION))
-		{
-			showVersion();
-			return EXIT_SUCCESS;
-		}
-		// Request for the manual?
-		else if (m_parser.isSwitchSet(HELP))
-		{
-			showManual();
-			return EXIT_SUCCESS;
-		}
-		// Empty.
-		else
-		{
-			throw Core::CmdLineException(TXT("No command specified"));
-		}
+		showUsage(out);
+		return EXIT_SUCCESS;
+	}
+	// Request for version?
+	else if (m_parser.isSwitchSet(VERSION))
+	{
+		showVersion(out);
+		return EXIT_SUCCESS;
+	}
+	// Request for the manual?
+	else if (m_parser.isSwitchSet(MANUAL))
+	{
+		showManual(err);
+		return EXIT_SUCCESS;
 	}
 
-	return EXIT_SUCCESS;
+	throw Core::CmdLineException(TXT("No command specified"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,33 +122,33 @@ CommandPtr WmiCmd::createCommand(int argc, tchar* argv[])
 ////////////////////////////////////////////////////////////////////////////////
 //! Display the program options syntax.
 
-void WmiCmd::showUsage()
+void WmiCmd::showUsage(tostream& out)
 {
-	tcout << std::endl;
-	tcout << TXT("USAGE: ") << s_appName << (" <command> [options] ...") << std::endl;
-	tcout << std::endl;
+	out << std::endl;
+	out << TXT("USAGE: ") << s_appName << (" <command> [options] ...") << std::endl;
+	out << std::endl;
 
 	size_t width = 16;
 
-	tcout << TXT("where <command> is one of:-") << std::endl;
-	tcout << std::endl;
-	tcout << TXT("query") << tstring(width-5, TXT(' ')) << ("Execute a query") << std::endl;
-	tcout << std::endl;
+	out << TXT("where <command> is one of:-") << std::endl;
+	out << std::endl;
+	out << TXT("query") << tstring(width-5, TXT(' ')) << ("Execute a query") << std::endl;
+	out << std::endl;
 
-	tcout << TXT("For help on an individual command use:-") << std::endl;
-	tcout << std::endl;
-	tcout << s_appName << TXT(" <command> -?") << std::endl;
-	tcout << std::endl;
+	out << TXT("For help on an individual command use:-") << std::endl;
+	out << std::endl;
+	out << s_appName << TXT(" <command> -?") << std::endl;
+	out << std::endl;
 
-	tcout << TXT("Non-command options:-") << std::endl;
-	tcout << std::endl;
-	tcout << m_parser.formatSwitches(Core::CmdLineParser::UNIX);
+	out << TXT("Non-command options:-") << std::endl;
+	out << std::endl;
+	out << m_parser.formatSwitches(Core::CmdLineParser::UNIX);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Display the program version.
 
-void WmiCmd::showVersion()
+void WmiCmd::showVersion(tostream& out)
 {
 	// Extract details from the resources.
 	tstring filename  = CPath::Application();
@@ -167,27 +160,36 @@ void WmiCmd::showVersion()
 #endif
 
 	// Display version etc.
-	tcout << std::endl;
-	tcout << s_appName << TXT(" v") << version << std::endl;
-	tcout << std::endl;
-	tcout << copyright << std::endl;
-	tcout << TXT("gort@cix.co.uk") << std::endl;
-	tcout << TXT("www.cix.co.uk/~gort") << std::endl;
+	out << std::endl;
+	out << s_appName << TXT(" v") << version << std::endl;
+	out << std::endl;
+	out << copyright << std::endl;
+	out << TXT("gort@cix.co.uk") << std::endl;
+	out << TXT("www.cix.co.uk/~gort") << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Display the manual.
 
-void WmiCmd::showManual()
+void WmiCmd::showManual(tostream& err)
 {
-	tstring helpfile = s_appName + TXT(".mht");
-	CPath   fullpath = CPath::ApplicationDir() / helpfile.c_str();
+	// Look for .mht based helpfile first.
+	tstring helpfile_mht = s_appName + TXT(".mht");
+	CPath   fullpath_mht = CPath::ApplicationDir() / helpfile_mht.c_str();
 
-	if (!fullpath.Exists())
+	if (fullpath_mht.Exists())
 	{
-		tcerr << TXT("ERROR: Manual missing - '") << fullpath.c_str() << TXT("'") << std::endl;
-		return;
+		::ShellExecute(NULL, NULL, fullpath_mht.c_str(), NULL, NULL, SW_SHOW);
 	}
 
-	::ShellExecute(NULL, NULL, fullpath.c_str(), NULL, NULL, SW_SHOW);
+	// Fall back to .html based helpfile.
+	tstring helpfile_html = s_appName + TXT(".html");
+	CPath   fullpath_html = CPath::ApplicationDir() / helpfile_html.c_str();
+
+	if (fullpath_html.Exists())
+	{
+		::ShellExecute(NULL, NULL, fullpath_html, NULL, NULL, SW_SHOW);
+	}
+
+	err << TXT("ERROR: Manual missing - '") << fullpath_html.c_str() << TXT("'") << std::endl;
 }
