@@ -220,6 +220,9 @@
 			RelativePath=".\TODO.txt">
 		</File>
 		<File
+			RelativePath=".\WMICmd.wxl">
+		</File>
+		<File
 			RelativePath=".\WMICmd.wxs">
 		</File>
 	</Files>
