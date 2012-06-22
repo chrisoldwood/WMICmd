@@ -20,6 +20,12 @@
 bool tryConvertDateTime(const tstring& value, tstring& datetime);
 
 ////////////////////////////////////////////////////////////////////////////////
+// Try and convert a string into a 64-bit integer. WMI appears to return sint64
+// and uint64 values as strings (VT_BSTR).
+
+bool tryConvert64BitInteger(const tstring& value, tstring& integer);
+
+////////////////////////////////////////////////////////////////////////////////
 // Format the value. If enabled it will look for strings that appear to be
 // WMI style datetimes and reformat them as a normal datetime.
 
