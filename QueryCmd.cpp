@@ -11,6 +11,10 @@
 #include <WMI/Connection.hpp>
 #include <WMI/ObjectIterator.hpp>
 #include "Format.hpp"
+#include <Core/TextFileIterator.hpp>
+#include <sstream>
+#include <iomanip>
+#include <Core/StringUtils.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 //! The table of command specific command line switches.
@@ -19,11 +23,13 @@ static Core::CmdLineSwitch s_switches[] =
 {
 	{ USAGE,		TXT("?"),	NULL,				Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the command syntax")						},
 	{ HOSTNAMES,	TXT("h"),	TXT("hosts"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::MULTIPLE,	TXT("hostname"),	TXT("Remote machines to query")							},
+	{ HOSTSFILE,	TXT("hf"),	TXT("hostsfile"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("file"),		TXT("File with remote machines to query")				},
 	{ USER,			TXT("u"),	TXT("user"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("login"),		TXT("The login name for remote machines")				},
 	{ PASSWORD,		TXT("p"),	TXT("password"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("password"),	TXT("The password for remote machines")					},
 	{ SHOW_HOST,	TXT("sh"),	TXT("showhost"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the hostname in the output")				},
 	{ SHOW_TYPES,	TXT("st"),	TXT("showtypes"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the type of each property value")			},
-	{ NO_FORMAT,	TXT("nf"),	TXT("no-format"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display raw values instead")						},
+	{ NO_FORMAT,	TXT("nf"),	TXT("noformat"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display raw values instead")						},
+	{ ALIGN,		TXT("a"),	TXT("align"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Align the output")									},
 };
 static size_t s_switchCount = ARRAY_SIZE(s_switches);
 
@@ -67,6 +73,7 @@ int QueryCmd::doExecute(tostream& out, tostream& /*err*/)
 
 	typedef Core::CmdLineParser::StringVector Hostnames;
 	typedef Hostnames::const_iterator HostIter;
+	typedef WMI::Object::PropertyNames::const_iterator PropNameIter;
 
 	// Validate and extract the command line arguments.
 	if (m_parser.getUnnamedArgs().size() < 2)
@@ -76,16 +83,32 @@ int QueryCmd::doExecute(tostream& out, tostream& /*err*/)
 	  || (m_parser.isSwitchSet(PASSWORD) && !m_parser.isSwitchSet(USER)) )
 		throw Core::CmdLineException(TXT("Both --user and --password must be specified together"));
 
+	if ( (m_parser.isSwitchSet(SHOW_TYPES) && m_parser.isSwitchSet(ALIGN)) )
+		throw Core::CmdLineException(TXT("Cannot specify --showtypes and --align together"));
+
 	tstring		query    = m_parser.getUnnamedArgs().at(1);
 	tstring		user     = m_parser.getSwitchValue(USER);
 	tstring		password = m_parser.getSwitchValue(PASSWORD);
 	bool		showHost = m_parser.isSwitchSet(SHOW_HOST);
 	bool		showTypes = m_parser.isSwitchSet(SHOW_TYPES);
-	bool		noFormatting = m_parser.isSwitchSet(NO_FORMAT);
+	bool		applyFormatting = !m_parser.isSwitchSet(NO_FORMAT);
+	bool		align    = m_parser.isSwitchSet(ALIGN);
 	Hostnames	hostnames;
 
 	if (m_parser.isSwitchSet(HOSTNAMES))
-		hostnames = m_parser.getNamedArgs().find(HOSTNAMES)->second;
+	{
+		const Core::CmdLineParser::StringVector& args = m_parser.getNamedArgs().find(HOSTNAMES)->second;
+
+		hostnames.insert(hostnames.end(), args.begin(), args.end());
+	}
+
+	if (m_parser.isSwitchSet(HOSTSFILE))
+	{
+		tstring hostsFile = m_parser.getSwitchValue(HOSTSFILE);
+		Core::CmdLineParser::StringVector args = readHostsFile(hostsFile);
+
+		hostnames.insert(hostnames.end(), args.begin(), args.end());
+	}
 
 	if (hostnames.empty())
 		hostnames.push_back(WMI::Connection::LOCALHOST);
@@ -110,25 +133,39 @@ int QueryCmd::doExecute(tostream& out, tostream& /*err*/)
 		if (objectIter != objectEnd)
 			out << std::endl;
 
+		if (showHost)
+		{
+			out << TXT("Host");
+			out << TXT(": ");
+			out << host;
+			out << std::endl;
+		}
+
 		// For all objects...
 		for (; objectIter != objectEnd; ++objectIter)
 		{
-			if (showHost)
-			{
-				out << TXT("Host");
-				out << TXT(": ");
-				out << host;
-				out << std::endl;
-			}
-
 			WMI::Object					object = *objectIter;
 			WMI::Object::PropertyNames	names;
 
 			object.getPropertyNames(names);
 
 			// For all properties...
-			WMI::Object::PropertyNames::const_iterator nameIter = names.begin();
-			WMI::Object::PropertyNames::const_iterator nameEnd  = names.end();
+			PropNameIter nameIter = names.begin();
+			PropNameIter nameEnd  = names.end();
+
+			size_t maxNameLength = 0;
+
+			for (; nameIter != nameEnd; ++nameIter)
+			{
+				const tstring& name = *nameIter;
+
+				maxNameLength = std::max(name.length(), maxNameLength);
+			}
+
+			size_t nameWidth = (align) ? maxNameLength : 0;
+
+			nameIter = names.begin();
+			nameEnd  = names.end();
 
 			for (; nameIter != nameEnd; ++nameIter)
 			{
@@ -138,21 +175,51 @@ int QueryCmd::doExecute(tostream& out, tostream& /*err*/)
 
 				object.getProperty(name, value);
 
-				out << name;
+				tstring formattedType = TXT(" [") + WCL::Variant::formatFullType(value) + TXT("]");
+				tstring formattedValue = formatValue(value, applyFormatting);
+
+				out << std::setiosflags(std::ios_base::left) << std::setw(nameWidth) << name;
 
 				if (showTypes)
-				{
-					out << TXT(" [") << WCL::Variant::formatFullType(value) << TXT("]");
-				}
+					out << formattedType;
 
 				out << TXT(": ");
-				out << formatValue(value, noFormatting);
+				out << formattedValue;
 				out << std::endl;
 			}
-
-			out << std::endl;
 		}
 	}
 
 	return EXIT_SUCCESS;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//! Read the list of hostnames from a text file. Empty lines are ignored as are
+//! comments which start with the # character.
+
+Core::CmdLineParser::StringVector QueryCmd::readHostsFile(const tstring& filename)
+{
+	Core::CmdLineParser::StringVector hosts;
+
+	Core::TextFileIterator end;
+	Core::TextFileIterator it(filename);
+
+	for (; it != end; ++it)
+	{
+		tstring line(*it);
+
+		size_t pos = line.find_first_of(TXT('#'));
+
+		if (pos != tstring::npos)
+			line.erase(pos);
+
+		Core::trim(line);
+
+		if (line.empty())
+			continue;
+
+		hosts.push_back(line);
+	}
+
+	return hosts;
 }

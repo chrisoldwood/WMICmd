@@ -38,6 +38,9 @@ private:
 
 	//! The implementation of the command.
 	virtual int doExecute(tostream& out, tostream& err);
+
+	//! Read the list of hostnames from a text file.
+	Core::CmdLineParser::StringVector readHostsFile(const tstring& filename);
 };
 
 #endif // APP_QUERYCMD_HPP

@@ -24,6 +24,8 @@ enum CmdLineArgType
 	SHOW_HOST		= 5,	//!< Repeat the hostname in the output.
 	SHOW_TYPES		= 6,	//!< Display the COM type of the property values.
 	NO_FORMAT		= 7,	//!< Display raw values instead of beautifying them.
+	ALIGN			= 8,	//!< Align the output.
+	HOSTSFILE		= 9,	//!< The file with a list of hostnames.
 	MANUAL			= 99,	//!< Show the manual.
 };
 
