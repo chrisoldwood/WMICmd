@@ -15,6 +15,7 @@
 #include <sstream>
 #include <iomanip>
 #include <Core/StringUtils.hpp>
+#include <limits>
 
 ////////////////////////////////////////////////////////////////////////////////
 //! The table of command specific command line switches.
@@ -30,6 +31,7 @@ static Core::CmdLineSwitch s_switches[] =
 	{ SHOW_TYPES,	TXT("st"),	TXT("showtypes"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the type of each property value")			},
 	{ NO_FORMAT,	TXT("nf"),	TXT("noformat"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display raw values instead")						},
 	{ ALIGN,		TXT("a"),	TXT("align"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Align the output")									},
+	{ TOP,			TXT("t"),	TXT("top"),			Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("count"),		TXT("Limit results to first N items")					},
 };
 static size_t s_switchCount = ARRAY_SIZE(s_switches);
 
@@ -113,6 +115,11 @@ int QueryCmd::doExecute(tostream& out, tostream& /*err*/)
 	if (hostnames.empty())
 		hostnames.push_back(WMI::Connection::LOCALHOST);
 
+	size_t maxItems = std::numeric_limits<size_t>::max();
+
+	if (m_parser.isSwitchSet(TOP))
+		maxItems = Core::parse<size_t>(m_parser.getSwitchValue(TOP));
+
 	// For all hosts to query...
 	for (HostIter it = hostnames.begin(); it != hostnames.end(); ++it)
 	{
@@ -130,11 +137,11 @@ int QueryCmd::doExecute(tostream& out, tostream& /*err*/)
 		WMI::ObjectIterator objectIter = connection.execQuery(query.c_str());
 		WMI::ObjectIterator objectEnd;
 
-		if (objectIter != objectEnd)
-			out << std::endl;
-
 		if (showHost)
 		{
+			if (applyFormatting)
+				out << std::endl;
+
 			out << TXT("Host");
 			out << TXT(": ");
 			out << host;
@@ -142,8 +149,11 @@ int QueryCmd::doExecute(tostream& out, tostream& /*err*/)
 		}
 
 		// For all objects...
-		for (; objectIter != objectEnd; ++objectIter)
+		for (size_t count = 0; (objectIter != objectEnd) && (count != maxItems); ++objectIter, ++count)
 		{
+			if (applyFormatting)
+				out << std::endl;
+
 			WMI::Object					object = *objectIter;
 			WMI::Object::PropertyNames	names;
 

@@ -26,6 +26,7 @@ enum CmdLineArgType
 	NO_FORMAT		= 7,	//!< Display raw values instead of beautifying them.
 	ALIGN			= 8,	//!< Align the output.
 	HOSTSFILE		= 9,	//!< The file with a list of hostnames.
+	TOP				= 10,	//!< Only show the first N items
 	MANUAL			= 99,	//!< Show the manual.
 };
 
