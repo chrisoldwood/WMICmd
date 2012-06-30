@@ -2,7 +2,7 @@
 <html>
 
 <head>
-<title>WMI Command Manual</title>
+<title>WMI Command v1.1 Manual</title>
 <meta name="author" content="Chris Oldwood">
 <style>
 body	{ font-family: Verdana, Arial; font-size: 10pt }
@@ -14,21 +14,24 @@ td		{ font-family: Verdana, Arial; font-size: 10pt; border: 1px solid black; ver
 
 <body>
 
-<h3 align="center">WMI Command v1.0 [Beta]</h3>
+<h3 align="center">WMI Command v1.1</h3>
 
 <a name="Introduction"></a>
-<h5>Introduction</h5>
+<h4>Introduction</h4>
 
 <p>
 This is a command line (aka console) based tool for executing WMI queries. It
-outputs a list of the matching objects with their relevant properties.
+outputs a list of the matching objects with their relevant properties and can
+invoke queries against either the local or remote machines.
 </p><p>
 Like most of my tools, this was designed as a test harness for my WMI library
-and was originally written before PowerShell was prevalent in the wild.
+and was originally written before PowerShell was prevalent in the wild. I
+sometimes find PowerShell a little too sluggish for running simple WMI queries
+and so this tool still has a place in my toolchest.
 </p>
 
 <a name="Commands"></a>
-<h5>Commands</h5>
+<h4>Commands</h4>
 
 <p>
 The tool currently only supports a single command, but the syntax allows for
@@ -39,20 +42,21 @@ a command type and then provide any arguments using switches, e.g.
 C:\> wmicmd command --option1 value1 --option2 value2
 </pre>
 <p>
-The arguments can be specified using either Windows style (e.g. /option) or the
-more common style (e.g. --option). Each switch has both a short name and a
-longer name and you can see the list of all supported commands using "wmicmd -?".
-Each command has its own help topic that describes it and lists the switches
-that are applicable, e.g. wmicmd query -?.
+The arguments can be specified using either Windows style (e.g. <code>/option</code>)
+or the more modern style (e.g. <code>--option</code>). Each switch has both a
+short name and a longer name and you can see the list of all supported commands
+using <code>wmicmd -?</code>. Each command also has its own help topic that
+describes it and lists the switches that are applicable, e.g. <code>wmicmd query -?</code>.
 </p>
 
 <a name="QueryCommand"></a>
-<h5>The Query Command</h5>
+<h4>The Query Command</h4>
 
 <p>
-The query command allows you to execute a WMI query which is provided as a
-single argument after the command name. It lists all the objects in the result
-sets, dumping their available properties.
+The <code>query</code> command allows you to execute a WMI query which is
+provided as a single argument after the command name (i.e. you must use quotes
+around the text). It lists all the objects in the result sets by enumerating
+their available properties.
 </p><pre>
 C:\> wmicmd query "SELECT Name,State FROM Win32_Service"
 Name: Alerter
@@ -63,43 +67,99 @@ State: Running
 . . .
 Name: xmlprov
 State: Stopped
-</pre><p>
-The command can also be run against one or remote machines using the --hosts
-switch. And, if required, an alternate set of credentials can be provided (the
-same credentials will be used for all the listed hosts).
+</pre>
+
+<a name="Hosts"></a>
+<h5>Remote Queries</h5>
+
+<p>
+The command can also be run against one or more remote machines using the
+<code>--hosts</code> switch. If required, an alternate set of credentials
+can be provided with the <code>--user</code> and <code>--password</code>
+switches; the same credentials will be used for all the listed hosts.
 </p><pre>
 C:\> wmicmd query "SELECT State FROM Win32_Service WHERE Name='w32time'" --hosts machine1 machine2 machine3
 </pre>
 <pre>
 C:\> wmicmd query "SELECT State FROM Win32_Service WHERE Name='w32time'" --hosts srv1 srv2 --user admin --password p455w0rd
 </pre><p>
-When running a query on multiple hosts the output does not contain the hostname
+Naturally a command line is not the easiest way to specify a long list of hosts
+and so there is the <code>--hostsfile</code> switch that allows you to store
+the host names in a text file and reference that instead.
+</p><pre>
+# Hosts file - one per line, comments start with a hash, empty lines allowed
+
+machine1
+machine2
+machine3
+
+C:\> wmicmd query "SELECT State FROM Win32_Service WHERE Name='w32time'" --hostsfile hostlist.txt
+</pre><p>
+When running a query on multiple hosts the output doesn't contain the host name
 anywhere by default so it may be tricky to work out which response was from
-which host. You can use the --ShowHost switch to force an extra leading property
-to appear with the hostname in it.
+which host. So, you can use the <code>--showhost</code> switch to output an
+extra property before each machine's results with the host name.
 </p><pre>
 C:\> wmicmd query "select LastBootUpTime from Win32_operatingsystem" --hosts srv1 srv2 --showhost
 
 Host: srv1
-LastBootUpTime: ...
+
+LastBootUpTime: 01/01/2012 02:05:35 +060
 
 Host: srv2
-LastBootUpTime: ...
-</pre><p>
-If one of more of the property values contains a datetime (which are awkward to
-read) you can use the --DetectDates switch to have them reformated according to
-your locale.
-</p><pre>
-C:\> wmicmd query "select LocalDateTime from Win32_operatingsystem" --detectdates
 
-LocalDateTime: 11/10/2010 18:02:26 +060
+LastBootUpTime: 02/03/2012 04:23:00 +060
+</pre>
+
+<a name="Formatting"></a>
+<h5>Formatting</h5>
+
+<p>
+By default datetimes and 64-bit integers in WMI are actually returned as strings,
+not the equivalent OLE data types. Consequently it can be hard to decipher the
+values. WMICmd attempts to detect both these data types and displays them in a
+more readable format.
+</p><pre>
+C:\> wmicmd query "select LastBootUpTime,TotalVirtualMemorySize from Win32_operatingsystem"
+
+LastBootUpTime: 25/06/2012 02:05:35 +060
+TotalVirtualMemorySize: 2,097,024
+</pre>
+However, if you are executing the query for the purposes of scraping the output
+to use in a command pipline you may want to ditch the formatting and just output
+the raw values. The <code>--noformat</code> switch will disable any formatting
+and line spacing and just return the raw propery names and values.
+</p><pre>
+C:\> wmicmd query "select DeviceID,Size from Win32_LogicalDisk" --noformat
+DeviceID: C:
+Size: 78658318336
+DeviceID: D:
+Size: 41373122560
 </pre><p>
+Conversely, if you have a wide variation in property name lengths in your output
+if can be hard to read. The <code>--align</code> switch causes the right of the
+property names and left side of the values to be aligned. This also has the
+effect of creating a fixed width output that may also make parsing easier.
+</p><pre>
+C:\> wmicmd query "select DeviceID,Size from Win32_LogicalDisk" --align
+
+DeviceID: C:
+Size    : 78,658,318,336
+
+DeviceID: D:
+Size    : 41,373,122,560
+</pre>
+
+<a name="Development"></a>
+<h5>Development Aids</h5>
+
+<p>
 If you're using the tool as a development aid and want to know what the actual
-COM types of the properties are you can use the --ShowTypes switch. This will
-append a string to the property name showing the VT_* symbols that represent
+COM types of the properties are you can use the <code>--showtypes</code> switch.
+This will append a string to the property name showing the VT_* symbols that represent
 the Variant types.
 </p><pre>
-C:\> wmicmd.exe query "select * from Win32_operatingsystem" --ShowTypes
+C:\> wmicmd.exe query "select * from Win32_operatingsystem" --showtypes
 
 BootDevice [VT_BSTR]: \Device\HarddiskVolume1
 . . .
@@ -113,12 +173,34 @@ ForegroundApplicationBoost [VT_UI1]: 2
 LocalDateTime [VT_BSTR]: 20101011181637.234000+060
 . . .
 SystemStartupOptions [VT_BSTR|VT_ARRAY]: &lt;array of VT_BSTR&gt;
+</pre><p>
+One more switch that is useful if you know the WMI class but don't know what
+properties it exposes, is <code>--top</code>. This acts just its SQL namesake
+and only lists the first N objects.
+</p><pre>
+C:\> wmicmd.exe query "select * from Win32_Process" --top 1
+
+CSCreationClassName: Win32_ComputerSystem
+CSName: K9
+Caption: System Idle Process
+. . .
+</pre>
+
+<a name="Manual"></a>
+<h4>Manual</h4>
+
+<p>
+There is one other global switch that allows you to launch this helpfile if you
+should need it, <code>--manual</code>. If WMICmd is on your <code>PATH</code>
+then you can access it from anywhere.
+</p><pre>
+C:\> wmicmd.exe --manual
 </pre>
 
 <hr>
 
 <a name="Warranty"></a>
-<h5>License & Warranty</h5>
+<h4>License & Warranty</h4>
 
 <p>
 This application is freeware - you get what you pay for, nothing more, nothing
@@ -126,14 +208,14 @@ less.
 </p>
 
 <a name="SourceCode"></a>
-<h5>Source Code</h5>
+<h4>Source Code</h4>
 
 <p>
 The full source code (C++) is available from my web site listed below.
 </p>
 
 <a name="Contact"></a>
-<h5>Contact Details</h5>
+<h4>Contact Details</h4>
 
 <p>
 Using the --version switch will also display my contact details. Please check the
@@ -143,7 +225,7 @@ Email: <a href="mailto://gort@cix.co.uk">gort@cix.co.uk</a><br>
 Web: <a href="http://www.cix.co.uk/~gort">www.cix.co.uk/~gort</a><br>
 </p><p>
 Chris Oldwood<br>
-11th October 2010<br>
+26th June 2012<br>
 </p>
 
 </body>
