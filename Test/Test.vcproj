@@ -4,6 +4,10 @@
 	Version="7.10"
 	Name="Test"
 	ProjectGUID="{DA731FA1-2E1A-49F2-A4D6-EFA3822DD08D}"
+	SccProjectName="&quot;$/Win32/WMICmd&quot;, DCFAAAAA"
+	SccAuxPath=""
+	SccLocalPath=".."
+	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -145,6 +149,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\QueryCmdTests.cpp">
+			</File>
+			<File
 				RelativePath=".\Test.cpp">
 			</File>
 			<Filter
@@ -155,6 +162,9 @@
 				</File>
 				<File
 					RelativePath="..\Format.cpp">
+				</File>
+				<File
+					RelativePath="..\QueryCmd.cpp">
 				</File>
 			</Filter>
 		</Filter>
