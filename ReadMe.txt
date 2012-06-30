@@ -1,30 +1,20 @@
-WMI Command v1.0 [Beta]
-=======================
+WMI Command v1.1
+================
 
 
-1: Installation
----------------
+1: Installation/Removal
+-----------------------
 
-Run setup.exe.
-
-or
-
-Copy the files WMICmd.* to a folder.
+The release comes as a standard MSI package. 
 
 
-2: Uninstallation
------------------
-
-Delete the files listed above.
-
-
-3: Help/Manual
+2: Help/Manual
 --------------
 
-There is a HelpFile - WMICmd.mht.
+There is a HelpFile - WMICmd.html.
 
 
-4: Contact Details
+3: Contact Details
 ------------------
 
 Email: gort@cix.co.uk
@@ -33,4 +23,4 @@ Web:   http://www.cix.co.uk/~gort
 
 Chris Oldwood 
 
-11th October 2010
+25th June 2012

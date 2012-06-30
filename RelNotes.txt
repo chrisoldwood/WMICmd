@@ -1,5 +1,16 @@
-Version 1.0 [Beta]
-==================
+Version 1.1
+===========
+
+- Added support for specifying hosts in a file.
+- Added support for aligning the values to the longest property name.
+- Made datetime detection the default and added a switch to turn it off.
+- Switched to MSI based installer.
+- Added a TOP switch to limit the results to the first N items.
+- Added detection of 64-bit string values and number grouping to help readability.
+
+
+Version 1.0
+===========
 
 - Support for executing queries against both the local and remote machines.
 - Detection of WMI format dates and reformatting as per the locale.
@@ -8,4 +19,4 @@ Version 1.0 [Beta]
 Chris Oldwood 
 [gort@cix.co.uk]
 
-11th October 2010
+25th June 2012

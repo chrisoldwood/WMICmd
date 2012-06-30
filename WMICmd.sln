@@ -30,7 +30,7 @@ Global
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
 	EndGlobalSection
 	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 5
+		SccNumberOfProjects = 6
 		SccLocalPath0 = .
 		CanCheckoutShared = true
 		SolutionUniqueID = {239D1BB7-C3A1-40EE-B0A6-92A317244B15}
@@ -49,6 +49,10 @@ Global
 		SccProjectName4 = \u0022$/Win32/Lib/WMI\u0022,\u0020HBFAAAAA
 		SccLocalPath4 = ..\\Lib\\WMI
 		CanCheckoutShared = true
+		SccProjectUniqueName5 = Test\\Test.vcproj
+		SccLocalPath5 = .
+		CanCheckoutShared = true
+		SccProjectFilePathRelativizedFromConnection5 = Test\\
 	EndGlobalSection
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug

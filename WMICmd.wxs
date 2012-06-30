@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="D99AA8DA-0B59-4d8d-A36F-5E1194E4BF3A"
-             Name="WMI Command v1.0 (Beta)"
+             Name="WMI Command v1.1"
              Language="1033"
-             Version="1.0.0"
+             Version="1.1.0"
              Manufacturer="Chris Oldwood"
              UpgradeCode="FB0AC2B0-68E4-40e3-9322-2BC6967062F6">
 
