@@ -9,6 +9,7 @@
 #include <WMI/DateTime.hpp>
 #include <WCL/VariantVector.hpp>
 #include <Core/AnsiWide.hpp>
+#include <malloc.h.>
 
 static tstring formatIntegerValue(const WCL::Variant& value, bool applyFormatting);
 
@@ -18,7 +19,7 @@ static tstring formatIntegerValue(const WCL::Variant& value, bool applyFormattin
 static tstring getGroupSeparator()
 {
 	int    count = ::GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SMONTHOUSANDSEP, NULL, 0);
-	tchar* buffer = static_cast<tchar*>(alloca(Core::numBytes<tchar>(count+1)));
+	tchar* buffer = static_cast<tchar*>(_alloca(Core::numBytes<tchar>(count+1)));
 
 	buffer[0] = TXT('\0');
 
