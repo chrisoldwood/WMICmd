@@ -23,6 +23,7 @@
 static Core::CmdLineSwitch s_switches[] = 
 {
 	{ USAGE,		TXT("?"),	NULL,				Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the command syntax")						},
+	{ USAGE,		NULL,	    TXT("help"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the command syntax")						},
 	{ HOSTNAMES,	TXT("h"),	TXT("hosts"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::MULTIPLE,	TXT("hostname"),	TXT("Remote machines to query")							},
 	{ HOSTSFILE,	TXT("hf"),	TXT("hostsfile"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("file"),		TXT("File with remote machines to query")				},
 	{ USER,			TXT("u"),	TXT("user"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("login"),		TXT("The login name for remote machines")				},
@@ -39,7 +40,7 @@ static size_t s_switchCount = ARRAY_SIZE(s_switches);
 //! Constructor.
 
 QueryCmd::QueryCmd(int argc, tchar* argv[])
-	: Command(s_switches, s_switches+s_switchCount, argc, argv)
+	: WCL::ConsoleCmd(s_switches, s_switches+s_switchCount, argc, argv, USAGE)
 {
 }
 

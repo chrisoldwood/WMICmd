@@ -128,9 +128,6 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\CommandTests.cpp">
-			</File>
-			<File
 				RelativePath=".\FormatTests.cpp">
 			</File>
 			<File
@@ -157,9 +154,6 @@
 			<Filter
 				Name="Impl"
 				Filter="">
-				<File
-					RelativePath="..\Command.cpp">
-				</File>
 				<File
 					RelativePath="..\Format.cpp">
 				</File>
