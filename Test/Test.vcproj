@@ -4,10 +4,10 @@
 	Version="7.10"
 	Name="Test"
 	ProjectGUID="{DA731FA1-2E1A-49F2-A4D6-EFA3822DD08D}"
-	SccProjectName="&quot;$/Win32/WMICmd&quot;, DCFAAAAA"
+	SccProjectName=""
 	SccAuxPath=""
-	SccLocalPath=".."
-	SccProvider="MSSCCI:Microsoft Visual SourceSafe"
+	SccLocalPath=""
+	SccProvider=""
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
