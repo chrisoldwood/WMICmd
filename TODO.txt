@@ -1,5 +1,5 @@
-- iterate namespace command
+#1 Show system property names
 
-- Handle (async) WMI events
+#2 iterate namespace command
 
-- Show system property names
+#3 Asynchronous WMI events

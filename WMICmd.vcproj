@@ -122,11 +122,10 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			Name="Build"
+			Filter="">
 			<File
-				RelativePath=".\Format.cpp">
+				RelativePath=".\Common.hpp">
 			</File>
 			<File
 				RelativePath=".\Main.cpp">
@@ -146,34 +145,47 @@
 						UsePrecompiledHeader="1"/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\QueryCmd.cpp">
-			</File>
-			<File
-				RelativePath=".\WmiCmd.cpp">
-			</File>
 		</Filter>
 		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			Name="Commands"
+			Filter="">
 			<File
 				RelativePath=".\CmdLineArgs.hpp">
 			</File>
 			<File
-				RelativePath=".\Common.hpp">
+				RelativePath=".\Format.cpp">
 			</File>
 			<File
 				RelativePath=".\Format.hpp">
 			</File>
 			<File
+				RelativePath=".\QueryCmd.cpp">
+			</File>
+			<File
 				RelativePath=".\QueryCmd.hpp">
 			</File>
 			<File
-				RelativePath=".\resource.h">
+				RelativePath=".\WmiCmd.cpp">
 			</File>
 			<File
 				RelativePath=".\WmiCmd.hpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="HelpFile"
+			Filter="">
+			<File
+				RelativePath=".\HelpFile\WMICmd.html">
+			</File>
+		</Filter>
+		<Filter
+			Name="Installer"
+			Filter="">
+			<File
+				RelativePath=".\WMICmd.wxl">
+			</File>
+			<File
+				RelativePath=".\WMICmd.wxs">
 			</File>
 		</Filter>
 		<Filter
@@ -187,14 +199,10 @@
 				RelativePath=".\App.rcv">
 			</File>
 			<File
-				RelativePath=".\WmiCmd.rc">
+				RelativePath=".\resource.h">
 			</File>
-		</Filter>
-		<Filter
-			Name="HelpFile"
-			Filter="">
 			<File
-				RelativePath=".\HelpFile\WMICmd.html">
+				RelativePath=".\WmiCmd.rc">
 			</File>
 		</Filter>
 		<File
@@ -204,16 +212,7 @@
 			RelativePath=".\RelNotes.txt">
 		</File>
 		<File
-			RelativePath=".\Setup.ini">
-		</File>
-		<File
 			RelativePath=".\TODO.txt">
-		</File>
-		<File
-			RelativePath=".\WMICmd.wxl">
-		</File>
-		<File
-			RelativePath=".\WMICmd.wxs">
 		</File>
 	</Files>
 	<Globals>
