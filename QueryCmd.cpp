@@ -16,6 +16,7 @@
 #include <iomanip>
 #include <Core/StringUtils.hpp>
 #include <limits>
+#include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////
 //! The table of command specific command line switches.
