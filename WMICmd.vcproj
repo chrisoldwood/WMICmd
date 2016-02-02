@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="WMICmd"
 	ProjectGUID="{A52818DF-EC41-4167-9648-1A12CE3CD65D}"
+	RootNamespace="WMICmd"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -63,6 +64,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
 				AdditionalIncludeDirectories="../Lib"
 			/>
 			<Tool
@@ -143,6 +145,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
 				AdditionalIncludeDirectories="../Lib"
 			/>
 			<Tool
