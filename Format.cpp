@@ -18,7 +18,7 @@ static tstring formatIntegerValue(const WCL::Variant& value, bool applyFormattin
 
 static tstring getGroupSeparator()
 {
-	int    count = ::GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SMONTHOUSANDSEP, NULL, 0);
+	int    count = ::GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SMONTHOUSANDSEP, nullptr, 0);
 	tchar* buffer = static_cast<tchar*>(_alloca(Core::numBytes<tchar>(count+1)));
 
 	buffer[0] = TXT('\0');
