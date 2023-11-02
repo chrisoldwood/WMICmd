@@ -23,16 +23,16 @@
 
 static Core::CmdLineSwitch s_switches[] = 
 {
-	{ USAGE,		TXT("?"),	nullptr,			Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		nullptr,			TXT("Display the command syntax")						},
-	{ USAGE,		nullptr,    TXT("help"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		nullptr,			TXT("Display the command syntax")						},
+	{ USAGE,		TXT("?"),	NULL,				Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the command syntax")						},
+	{ USAGE,		NULL,		TXT("help"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the command syntax")						},
 	{ HOSTNAMES,	TXT("h"),	TXT("hosts"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::MULTIPLE,	TXT("hostname"),	TXT("Remote machines to query")							},
 	{ HOSTSFILE,	TXT("hf"),	TXT("hostsfile"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("file"),		TXT("File with remote machines to query")				},
 	{ USER,			TXT("u"),	TXT("user"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("login"),		TXT("The login name for remote machines")				},
 	{ PASSWORD,		TXT("p"),	TXT("password"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("password"),	TXT("The password for remote machines")					},
-	{ SHOW_HOST,	TXT("sh"),	TXT("showhost"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		nullptr,			TXT("Display the hostname in the output")				},
-	{ SHOW_TYPES,	TXT("st"),	TXT("showtypes"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		nullptr,			TXT("Display the type of each property value")			},
-	{ NO_FORMAT,	TXT("nf"),	TXT("noformat"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		nullptr,			TXT("Display raw values instead")						},
-	{ ALIGN,		TXT("a"),	TXT("align"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		nullptr,			TXT("Align the output")									},
+	{ SHOW_HOST,	TXT("sh"),	TXT("showhost"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the hostname in the output")				},
+	{ SHOW_TYPES,	TXT("st"),	TXT("showtypes"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display the type of each property value")			},
+	{ NO_FORMAT,	TXT("nf"),	TXT("noformat"),	Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Display raw values instead")						},
+	{ ALIGN,		TXT("a"),	TXT("align"),		Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::NONE,		NULL,				TXT("Align the output")									},
 	{ TOP,			TXT("t"),	TXT("top"),			Core::CmdLineSwitch::ONCE,	Core::CmdLineSwitch::SINGLE,	TXT("count"),		TXT("Limit results to first N items")					},
 };
 static size_t s_switchCount = ARRAY_SIZE(s_switches);
