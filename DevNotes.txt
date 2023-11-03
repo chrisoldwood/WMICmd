@@ -36,5 +36,16 @@ There is also one for upgrading to a later version of Visual C++:-
 C:\> Win32\Scripts\SetVars vc140
 C:\> Win32\Scripts\Upgrade Win32\WMICmd\WMICmd.sln
 
+Tests
+-----
+
+A separate project exists in the solution with unit tests:-
+
+> WMICmd\Test\Debug\%VC_PLATFORM%\Test.exe
+
+There is also a script that runs a few smoke tests too:-
+
+> WMICmd\TestScript debug
+
 Chris Oldwood 
-27th June 2014
+3rd November 2023
