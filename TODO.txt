@@ -3,3 +3,5 @@
 #2 iterate namespace command
 
 #3 Asynchronous WMI events
+
+#4 Display arrays of values.
